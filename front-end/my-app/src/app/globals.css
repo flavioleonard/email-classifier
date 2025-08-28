@@ -1,12 +1,21 @@
+:root {
+  --Blue-mustard-sandwich-1-rgba: rgba(0, 20, 66, 1);
+  --Blue-mustard-sandwich-2-rgba: rgba(7, 84, 83, 1);
+  --Blue-mustard-sandwich-3-rgba: rgba(122, 122, 122, 1);
+  --Blue-mustard-sandwich-4-rgba: rgba(255, 255, 255, 1);
+  --Blue-mustard-sandwich-5-rgba: rgba(255, 179, 13, 1);
+}
+
 html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
 }
 
 * {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
-  background-color: slategray;
+  background-color: var(--Blue-mustard-sandwich-1-rgba);
 }

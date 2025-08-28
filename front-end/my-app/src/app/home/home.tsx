@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import "./home.css";
+import { Header } from "../components/header/header";
 
 interface ClassificationResult {
   category: "Produtivo" | "Improdutivo" | null;
@@ -68,13 +69,7 @@ export const Home = () => {
 
   return (
     <div className="home-container">
-      <div className="header">
-        <h1>Classificador de Emails</h1>
-        <p>
-          Classifique emails como Produtivos ou Improdutivos e obtenha respostas
-          automáticas sugeridas
-        </p>
-      </div>
+      <Header />
 
       <div className="main-content">
         <div className="upload-section">

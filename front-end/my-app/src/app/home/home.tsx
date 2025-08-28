@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import "./home.css";
 import { Header } from "../components/header/header";
+import { SubmitButton } from "../components/buttons/submit-button/submitButton";
+import { ResetButton } from "../components/buttons/clean-button/cleanButton";
 
 interface ClassificationResult {
   category: "Produtivo" | "Improdutivo" | null;
@@ -107,22 +109,18 @@ export const Home = () => {
             </div>
 
             <div className="button-group">
-              <button
-                type="submit"
-                disabled={isLoading || (!emailText && !selectedFile)}
-                className="submit-btn"
-              >
-                {isLoading ? "Processando..." : "Analisar Email"}
-              </button>
+              <SubmitButton
+                text="Analisar Email"
+                loadingText="Processando..."
+                isLoading={isLoading}
+                isDisabled={!emailText && !selectedFile}
+              />
 
-              <button
-                type="button"
+              <ResetButton
+                text="Limpar"
                 onClick={resetForm}
-                disabled={isLoading}
-                className="reset-btn"
-              >
-                Limpar
-              </button>
+                isDisabled={isLoading}
+              />
             </div>
           </form>
         </div>

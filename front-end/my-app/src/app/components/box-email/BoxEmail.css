@@ -5,3 +5,11 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   background-color: var(--Blue-mustard-sandwich-2-rgba);
 }
+
+.box-email h2 {
+  margin-bottom: 20px;
+}
+
+.input-group label {
+  color: var(--Blue-mustard-sandwich-3-rgba);
+}

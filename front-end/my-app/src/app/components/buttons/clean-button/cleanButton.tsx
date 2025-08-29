@@ -1,6 +1,7 @@
 import React from "react";
+import "./CleanButton.css";
 
-interface ResetButtonProps {
+interface CleanButtonProps {
   text: string;
   isDisabled?: boolean;
   onClick: () => void;
@@ -8,7 +9,7 @@ interface ResetButtonProps {
   className?: string;
 }
 
-export const ResetButton: React.FC<ResetButtonProps> = ({
+export const CleanButton: React.FC<CleanButtonProps> = ({
   text,
   isDisabled = false,
   onClick,
@@ -20,7 +21,7 @@ export const ResetButton: React.FC<ResetButtonProps> = ({
       type={type}
       disabled={isDisabled}
       onClick={onClick}
-      className={className}
+      className="reset-button"
     >
       {text}
     </button>

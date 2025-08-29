@@ -1,0 +1,12 @@
+.reset-button {
+  background-color: var(--Blue-mustard-sandwich-5-rgba);
+  padding: 12px 30px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 140px;
+  color: var(--Blue-mustard-sandwich-4-rgba);
+}

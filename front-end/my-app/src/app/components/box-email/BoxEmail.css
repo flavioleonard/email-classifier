@@ -1,0 +1,7 @@
+.box-email {
+  padding: 30px;
+  border-radius: 2vh;
+  width: 60vw;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  background-color: var(--Blue-mustard-sandwich-2-rgba);
+}

@@ -4,18 +4,23 @@
   --Blue-mustard-sandwich-3-rgba: rgba(122, 122, 122, 1);
   --Blue-mustard-sandwich-4-rgba: rgba(255, 255, 255, 1);
   --Blue-mustard-sandwich-5-rgba: rgba(255, 179, 13, 1);
+  --background: rgb(2, 4, 20);
 }
 
 html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
-  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  height: 100vh;
+  background-color: var(--background);
 }
 
 * {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
-  background-color: var(--Blue-mustard-sandwich-1-rgba);
+  color: rgb(198, 191, 191);
+
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+    sans-serif;
 }

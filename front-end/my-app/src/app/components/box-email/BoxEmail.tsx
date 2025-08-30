@@ -4,14 +4,15 @@ import { CleanButton } from "../buttons/clean-button/CleanButton";
 import { SubmitButton } from "../buttons/submit-button/SubmitButton";
 import "./BoxEmail.css";
 
-export const BoxEmail = () => {
+interface BoxEmailProps {
+  setResult: (result: ClassificationResult) => void;
+}
+
+export const BoxEmail = ({ setResult }: BoxEmailProps) => {
   const [emailText, setEmailText] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [result, setResult] = useState<ClassificationResult>({
-    category: null,
-    suggestedResponse: "",
-  });
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {

@@ -17,7 +17,7 @@ export const Home = () => {
       <Header />
 
       <div className="main-content">
-        <BoxEmail />
+        <BoxEmail setResult={setResult} />
 
         {result.category && (
           <div className="results-section">

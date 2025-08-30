@@ -1,21 +1,66 @@
-from flask import Blueprint, request, jsonify
-from src.services.email_processor import EmailProcessor
+from fastapi import FastAPI, File, UploadFile, Form, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+import tempfile
+import os
+from ..services.email_processor import EmailProcessor
 
-api = Blueprint('api', __name__)
+app = FastAPI()
 
-@api.route('/process-email', methods=['POST'])
-def process_email():
-    if 'file' not in request.files and 'text' not in request.form:
-        return jsonify({'error': 'No email content provided'}), 400
+# Configurar CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # URL do seu frontend
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-    email_processor = EmailProcessor()
+email_processor = EmailProcessor()
 
-    if 'file' in request.files:
-        file = request.files['file']
-        email_content = email_processor.read_email_from_file(file)
-    else:
-        email_content = request.form['text']
+@app.post("/api/classify-email")
+async def classify_email(
+    file: UploadFile = File(None),
+    text: str = Form(None)
+):
+    try:
+        email_content = ""
+        
+        if file:
+            # Processar arquivo enviado
+            file_extension = os.path.splitext(file.filename)[1].lower()
+            
+            if file_extension not in ['.txt', '.pdf']:
+                raise HTTPException(status_code=400, detail="Tipo de arquivo não suportado")
+            
+            # Salvar arquivo temporário
+            with tempfile.NamedTemporaryFile(delete=False, suffix=file_extension) as tmp_file:
+                content = await file.read()
+                tmp_file.write(content)
+                tmp_file_path = tmp_file.name
+            
+            try:
+                email_content = email_processor.read_email_from_file(tmp_file_path, file_extension)
+            finally:
+                os.unlink(tmp_file_path)  # Deletar arquivo temporário
+                
+        elif text:
+            email_content = text
+        else:
+            raise HTTPException(status_code=400, detail="Nenhum conteúdo fornecido")
+        
+        # Processar email
+        result = email_processor.process_email(email_content)
+        
+        return {
+            "category": result['category'],
+            "confidence": round(result['confidence'], 2),
+            "suggested_response": result['suggested_response'],
+            "processed_text": result['processed_text'][:200] + "..." if len(result['processed_text']) > 200 else result['processed_text']
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro no processamento: {str(e)}")
 
-    processed_result = email_processor.process_email_content(email_content)
-
-    return jsonify(processed_result), 200
+@app.get("/")
+async def root():
+    return {"message": "Email Classifier API is running"}

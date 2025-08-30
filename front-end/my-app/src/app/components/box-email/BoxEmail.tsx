@@ -42,15 +42,29 @@ export const BoxEmail = () => {
     setIsLoading(true);
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      const formData = new FormData();
 
-      const mockResult: ClassificationResult = {
-        category: Math.random() > 0.5 ? "Produtivo" : "Improdutivo",
-        suggestedResponse:
-          "Esta é uma resposta automática sugerida baseada na análise do email.",
-      };
+      if (selectedFile) {
+        formData.append("file", selectedFile);
+      } else {
+        formData.append("text", emailText);
+      }
 
-      setResult(mockResult);
+      const response = await fetch("http://localhost:8000/api/classify-email", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro na classificação do email");
+      }
+
+      const data = await response.json();
+
+      setResult({
+        category: data.category,
+        suggestedResponse: data.suggested_response,
+      });
     } catch (error) {
       console.error("Erro ao processar email:", error);
       alert("Erro ao processar o email. Tente novamente.");

@@ -33,7 +33,7 @@ class EmailProcessor:
         category, confidence = self.nlp_service.classify_email_productivity(processed_text)
         
         # Geração de resposta
-        suggested_response = self.nlp_service.generate_response(category, email_content)
+        suggested_response = self.nlp_service.generate_response(category)
         
         return {
             'category': category,

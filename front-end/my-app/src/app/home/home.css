@@ -142,6 +142,7 @@
 }
 
 .results-section {
+  max-width: 60vw;
   background: white;
   padding: 30px;
   border-radius: 12px;

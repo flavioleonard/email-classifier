@@ -6,9 +6,15 @@ from ..services.email_processor import EmailProcessor
 
 app = FastAPI()
 
+# Configurar CORS para desenvolvimento e produção
+allowed_origins = [
+    "http://localhost:3000",  # desenvolvimento
+    "https://email-classifier-frontend.onrender.com",  # produção
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

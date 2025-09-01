@@ -14,6 +14,8 @@ export const BoxEmail = ({ setResult }: BoxEmailProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -21,6 +23,7 @@ export const BoxEmail = ({ setResult }: BoxEmailProps) => {
       setEmailText("");
     }
   };
+
   const handleTextChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setEmailText(event.target.value);
     if (event.target.value && selectedFile) {
@@ -30,6 +33,7 @@ export const BoxEmail = ({ setResult }: BoxEmailProps) => {
       }
     }
   };
+
   const resetForm = () => {
     setEmailText("");
     setSelectedFile(null);
@@ -58,7 +62,7 @@ export const BoxEmail = ({ setResult }: BoxEmailProps) => {
         formData.append("text", emailText);
       }
 
-      const response = await fetch("http://localhost:8000/api/classify-email", {
+      const response = await fetch(`${API_URL}/api/classify-email`, {
         method: "POST",
         body: formData,
       });

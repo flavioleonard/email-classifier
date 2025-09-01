@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import "./home.css";
 import { Header } from "../components/header/header";
 import { BoxEmail } from "../components/box-email/BoxEmail";
+import { CopyButton } from "../components/buttons/copy-button/CopyButton";
 import { ClassificationResult } from "../interfaces/ClassificationResult";
 
 export const Home = () => {
@@ -34,7 +35,10 @@ export const Home = () => {
               </div>
 
               <div className="response-result">
-                <h3>Resposta Automática Sugerida:</h3>
+                <div className="response-header">
+                  <h3>Resposta Automática Sugerida:</h3>
+                  <CopyButton textToCopy={result.suggestedResponse} />
+                </div>
                 <div className="suggested-response">
                   {result.suggestedResponse}
                 </div>

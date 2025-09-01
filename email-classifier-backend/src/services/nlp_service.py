@@ -1,23 +1,36 @@
 import re
 import nltk
+import os
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 import string
 from transformers import pipeline
 import torch
-import os
 
 class NLPService:
     def __init__(self):
+        # Configurar diretório NLTK para produção
+        if 'RENDER' in os.environ:
+            nltk_data_path = os.path.join(os.path.dirname(__file__), '../../nltk_data')
+            nltk.data.path.append(nltk_data_path)
+        
         # Garantir recursos do NLTK
         for resource in ['punkt', 'stopwords', 'wordnet']:
             try:
-                nltk.data.find(f'tokenizers/{resource}' if resource == 'punkt' else f'corpora/{resource}')
+                if resource == 'punkt':
+                    nltk.data.find('tokenizers/punkt')
+                else:
+                    nltk.data.find(f'corpora/{resource}')
             except LookupError:
-                nltk.download(resource)
+                try:
+                    nltk.download(resource, quiet=True)
+                except:
+                    print(f"Falha ao baixar {resource}")
+        
         self.stop_words = set(stopwords.words('portuguese')) | set(stopwords.words('english'))
         self.lemmatizer = WordNetLemmatizer()
+        
         model_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../fine_tuned_model"))
         self.classifier = pipeline(
             "text-classification",
@@ -26,6 +39,7 @@ class NLPService:
             device=0 if torch.cuda.is_available() else -1
         )
 
+    # ...existing code...
     def preprocess_text(self, text):
         text = text.lower()
         text = re.sub(r'\S+@\S+', '', text)

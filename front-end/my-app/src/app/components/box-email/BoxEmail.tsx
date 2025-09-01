@@ -1,13 +1,12 @@
 import { useState, useRef } from "react";
 import { ClassificationResult } from "@/app/interfaces/ClassificationResult";
-import { CleanButton } from "../buttons/clean-button/CleanButton";
-import { SubmitButton } from "../buttons/submit-button/SubmitButton";
+import { CleanButton } from "@/app/components/buttons/clean-button/CleanButton";
+import { SubmitButton } from "@/app/components/buttons/submit-button/SubmitButton";
 import "./BoxEmail.css";
 
 interface BoxEmailProps {
   setResult: (result: ClassificationResult) => void;
 }
-
 export const BoxEmail = ({ setResult }: BoxEmailProps) => {
   const [emailText, setEmailText] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);

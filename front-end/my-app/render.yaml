@@ -2,7 +2,7 @@ services:
   - type: web
     name: email-classifier-frontend
     env: node
-    branch: feat_preparing_to_deploy_front_end
+    branch: feat_preparing_to_deploy_front_end_2
     buildCommand: npm install && npm run build
     startCommand: npm start
     plan: free
@@ -11,4 +11,4 @@ services:
       - key: NODE_ENV
         value: production
       - key: NEXT_PUBLIC_API_URL
-        value: https://email-classifier-backend.onrender.com
+        value: https://email-classifier-wsdr.onrender.com

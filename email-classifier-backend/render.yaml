@@ -2,6 +2,7 @@ services:
   - type: web
     name: email-classifier-backend
     env: python
+    branch: feat_preparing_to_deploy_front_end
     buildCommand: pip install -r requirements.txt && python -c "import nltk; nltk.download('punkt'); nltk.download('stopwords'); nltk.download('wordnet')"
     startCommand: python -m src.main
     plan: free

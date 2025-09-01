@@ -2,6 +2,7 @@ services:
   - type: web
     name: email-classifier-frontend
     env: node
+    branch: feat_preparing_to_deploy_front_end
     buildCommand: npm install && npm run build
     startCommand: npm start
     plan: free

@@ -1,0 +1,5 @@
+email-classifier-backend/src/results/checkpoint-40/optimizer.pt filter=lfs diff=lfs merge=lfs -text
+email-classifier-backend/src/results/checkpoint-80/optimizer.pt filter=lfs diff=lfs merge=lfs -text
+email-classifier-backend/src/fine_tuned_model/model.safetensors filter=lfs diff=lfs merge=lfs -text
+email-classifier-backend/src/results/checkpoint-80/model.safetensors filter=lfs diff=lfs merge=lfs -text
+email-classifier-backend/src/results/checkpoint-40/model.safetensors filter=lfs diff=lfs merge=lfs -text

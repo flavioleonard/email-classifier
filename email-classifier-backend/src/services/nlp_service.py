@@ -5,8 +5,9 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 import string
-from transformers import pipeline
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch
+import gc
 
 class NLPService:
     def __init__(self):
@@ -31,13 +32,29 @@ class NLPService:
         self.stop_words = set(stopwords.words('portuguese')) | set(stopwords.words('english'))
         self.lemmatizer = WordNetLemmatizer()
         
-        model_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../fine_tuned_model"))
-        self.classifier = pipeline(
-            "text-classification",
-            model=model_path,
-            tokenizer=model_path,
-            device=0 if torch.cuda.is_available() else -1
-        )
+        # Carregamento lazy do modelo - só carrega quando necessário
+        self.model = None
+        self.tokenizer = None
+        self.model_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../fine_tuned_model"))
+    
+    def _load_model(self):
+        """Carrega o modelo apenas quando necessário"""
+        if self.model is None or self.tokenizer is None:
+            print("Carregando modelo...")
+            # Carregar modelo com configurações de baixa memória
+            self.tokenizer = AutoTokenizer.from_pretrained(self.model_path)
+            self.model = AutoModelForSequenceClassification.from_pretrained(
+                self.model_path,
+                torch_dtype=torch.float16 if torch.cuda.is_available() else torch.float32,
+                low_cpu_mem_usage=True
+            )
+            
+            # Modo de avaliação para economizar memória
+            self.model.eval()
+            
+            # Forçar garbage collection
+            gc.collect()
+            print("Modelo carregado com sucesso!")
 
     # ...existing code...
     def preprocess_text(self, text):
@@ -54,10 +71,32 @@ class NLPService:
 
     def classify_email_productivity(self, processed_text):
         try:
-            result = self.classifier(processed_text)
-            label_map = {"LABEL_0": "Produtivo", "LABEL_1": "Improdutivo"}
-            category = label_map.get(result[0]['label'], result[0]['label'])
-            score = result[0]['score'] * 100
+            # Carregar modelo apenas quando necessário
+            self._load_model()
+            
+            # Usar tokenizer e modelo diretamente para economizar memória
+            inputs = self.tokenizer(
+                processed_text, 
+                return_tensors="pt", 
+                truncation=True, 
+                padding=True, 
+                max_length=256
+            )
+            
+            with torch.no_grad():
+                outputs = self.model(**inputs)
+                predictions = torch.nn.functional.softmax(outputs.logits, dim=-1)
+                predicted_class = torch.argmax(predictions, dim=-1).item()
+                confidence = predictions[0][predicted_class].item()
+            
+            # Limpar tensores da memória
+            del inputs, outputs, predictions
+            gc.collect()
+            
+            label_map = {0: "Produtivo", 1: "Improdutivo"}
+            category = label_map[predicted_class]
+            score = confidence * 100
+            
             return category, score
         except Exception as e:
             print("Erro na classificação:", e)

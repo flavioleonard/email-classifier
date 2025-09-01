@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { ClassificationResult } from "@/app/interfaces/ClassificationResult";
 import { CleanButton } from "../buttons/clean-button/CleanButton";
 import { SubmitButton } from "../buttons/submit-button/SubmitButton";
@@ -12,6 +12,7 @@ export const BoxEmail = ({ setResult }: BoxEmailProps) => {
   const [emailText, setEmailText] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -24,12 +25,18 @@ export const BoxEmail = ({ setResult }: BoxEmailProps) => {
     setEmailText(event.target.value);
     if (event.target.value && selectedFile) {
       setSelectedFile(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     }
   };
   const resetForm = () => {
     setEmailText("");
     setSelectedFile(null);
     setResult({ category: null, suggestedResponse: "" });
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -87,6 +94,7 @@ export const BoxEmail = ({ setResult }: BoxEmailProps) => {
             accept=".txt,.pdf"
             onChange={handleFileChange}
             disabled={isLoading}
+            ref={fileInputRef}
           />
           {selectedFile && (
             <p className="file-info">

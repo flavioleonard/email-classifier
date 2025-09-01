@@ -8,8 +8,8 @@ def load_dataset(file_path):
     return df['Email'].tolist(), df['Classificacao'].tolist()
 
 def preprocess_data(emails, labels):
-    tokenizer = AutoTokenizer.from_pretrained("MoritzLaurer/mDeBERTa-v3-base-mnli-xnli")
-    encodings = tokenizer(emails, truncation=True, padding=True, max_length=512)
+    tokenizer = AutoTokenizer.from_pretrained("distilbert-base-multilingual-cased")
+    encodings = tokenizer(emails, truncation=True, padding=True, max_length=256)  
     label_map = {"Produtivo": 0, "Improdutivo": 1}
     labels = [label_map[label] for label in labels]
     return encodings, labels, tokenizer
@@ -29,7 +29,7 @@ class EmailDataset(torch.utils.data.Dataset):
 
 def fine_tune_model(encodings, labels, tokenizer):
     model = AutoModelForSequenceClassification.from_pretrained(
-        "MoritzLaurer/mDeBERTa-v3-base-mnli-xnli", 
+        "distilbert-base-multilingual-cased",
         num_labels=2,
         ignore_mismatched_sizes=True
     )
@@ -42,13 +42,17 @@ def fine_tune_model(encodings, labels, tokenizer):
     val_dataset = EmailDataset(val_encodings, val_labels)
     training_args = TrainingArguments(
         output_dir='./results',
-        num_train_epochs=3,
-        per_device_train_batch_size=8,
-        per_device_eval_batch_size=8,
-        warmup_steps=500,
+        num_train_epochs=2,
+        per_device_train_batch_size=4,
+        per_device_eval_batch_size=4,
+        warmup_steps=100,
         weight_decay=0.01,
         logging_dir='./logs',
         logging_steps=10,
+        save_strategy="epoch",
+        eval_strategy="epoch",
+        load_best_model_at_end=True,
+        dataloader_pin_memory=False,  
     )
     trainer = Trainer(
         model=model,
